@@ -1,7 +1,7 @@
 // auth controller
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const bcrypt = require("bcrypt")
+const bcrypt = require('bcrypt');
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 const auth = {};
@@ -21,7 +21,8 @@ auth.signup = async (req, res) => {
             email: data.email,
             password: passwordHash
         }).save();
-        const token = jwt.sign({ id: user._id }, JWT_SECRET_KEY, { expiresIn: '1h' });
+        // generatetoken
+        const token = jwt.sign({ id: user._id }, JWT_SECRET_KEY);
         res.status(200).send({
             message: "User created successfully",
             data: {
