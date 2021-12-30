@@ -3,9 +3,9 @@ const auth =  require('../middleware/auth');
 
 const post = {};
 
-post.create = async (req, res) => {
+const createPost = async (req, res) => {
     const data = req.body;
-
+    //     const post = await Post.create(req.body)
     try {
         const post = await new Post({
             user_id: data.user_id,
@@ -19,29 +19,34 @@ post.create = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(400).send({ message: 'Error creating post', error });
+        res.status(400).send({ message: 'Error creating post', error: error.message });
     }
 }
 
-post.getOne = async (req, res) => {
+const getPost = async (req, res) => {
     try {
-        const post = await Post.findById(req.params.post_id).populate("user_id", "name email");
+        const { id: post_id } = req.params;
+        const post = await Post.findOne({ _id: post_id }).populate("user_id", "name email");
+        if (!post) {
+            return res.status(400).send({ message: 'Post not found' });
+        }
         res.status(200).send({ message: 'Post retrieved successfully', data: { post } });
     } catch (error) {
-        res.status(400).send({ message: 'Error retrieving post', error });
+        res.status(400).send({ message: 'Error retrieving post', error: error.message });
     }
 }
 
-post.getAll = async (req, res) => {
+const getAllPosts = async (req, res) => {
     try {
         const posts = await Post.find().populate("user_id", "name email");
         res.status(200).send({ message: 'All posts retrieved successfully', data: { posts } });
     } catch (error) {
         res.status(400).send({ message: 'Error retrieving posts', error });
     }
+    console.log(post)
 }
 
-post.update = async (req, res) => {
+const updatePost = async (req, res) => {
     const data = req.body;
     try {
         const post = await Post.findOne({_id: req.params.post_id});
@@ -65,7 +70,7 @@ post.update = async (req, res) => {
     }
 }
 
-post.delete = async (req, res) => {
+const deletePost = async (req, res) => {
     try {
         const post = await Post.findOne({ _id: req.params.post_id});
         if (post.user_id != req.USER_ID) {
@@ -78,4 +83,10 @@ post.delete = async (req, res) => {
     }
 }
 
-module.exports = post
+module.exports = {
+    createPost,
+    getAllPosts,
+    getPost,
+    updatePost,
+    deletePost
+}
