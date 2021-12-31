@@ -18,8 +18,7 @@ app.get('/home', (req, res) => {
 })
 
 app.use("/api/v1/auth", require("./routes/auth"));
-app.use("/api/v1", require("./routes/posts"));
-// app.use("/api/v1/post", require("./routes/posts"));
+app.use("/api/v1/post", require("./routes/posts"));
 
 
 // Error middleware
